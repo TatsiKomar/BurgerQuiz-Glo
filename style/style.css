@@ -7,7 +7,7 @@ li {
     list-style-type: none;
 }
 
-label {
+.answers-item label {
     cursor: pointer;
     border: 2px solid #000;
     border-radius: 0 0 10px 10px;
@@ -15,7 +15,7 @@ label {
     text-align: center;
 }
 
-label:hover {
+.answers-item label:hover {
     border: 2px solid rgba(0,0,0,0.5);
 }
 
