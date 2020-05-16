@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function(){
     const burgerBtn = document.getElementById('burger');
     const nextButton = document.querySelector('#next');
     const prevButton = document.querySelector('#prev');
-    
-   
-
+    const modalDialog = document.querySelector('.modal-dialog');
+      
+    // основной блок данных
     const questions = [
         {
             question: "Какого цвета бургер?",
@@ -109,10 +109,25 @@ document.addEventListener('DOMContentLoaded', function(){
         playTest();
     });
 
-   
+    //блок обработчиков событий
+    let count = -100;
+        
+    modalDialog.style.top = count + "%";
+
+    const animateModal = () => {
+        modalDialog.style.top = count + "%";
+        count += 3;
+        
+        if (count < 0) {
+            requestAnimationFrame(animateModal);
+        } else {
+            count = -100;
+        }
+    };
 
     //открываем диалоговое окно
     btnOpenModal.addEventListener('click', () => {
+        requestAnimationFrame(animateModal);
         modalBlock.classList.add('d-block');
         playTest();
     });
@@ -142,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const renderAnswers = (index) => {
             questions[index].answers.forEach((answer) => {
                 const answerItem = document.createElement('div');
-                answerItem.classList.add('answers-item','d-flex', 'flex-column');
+                answerItem.classList.add('answers-item','d-flex', 'justify-content-center');
                 answerItem.innerHTML = `
                     <input type="${questions[index].type}" id="${answer.title}" name="answer" class="d-none">
                     <label for="${answer.title}" class="d-flex flex-column justify-content-between">
@@ -152,32 +167,28 @@ document.addEventListener('DOMContentLoaded', function(){
                `
                //appendChild встраивает  элемент
                formAnswers.appendChild(answerItem);
+            });
+        };
 
-                console.log(answerItem);
-            })
-        }
         //функция вписывает информацию в блок с вопросами и ответами
         const renderQuestions = (indexQuestion) => {
             formAnswers.innerHTML = '';
             questionTitle.textContent = `${questions[indexQuestion].question}`;
             renderAnswers(indexQuestion);
-        }
-
+        };
         renderQuestions(numberQuestion);
 
         nextButton.onclick = () => {
             numberQuestion++;
             renderQuestions(numberQuestion);
-        }
+        };
 
         prevButton.onclick = () => {
             numberQuestion--;
             renderQuestions(numberQuestion);
-        }
-        
+        };
     };
-
-
+    
 });
 
 
