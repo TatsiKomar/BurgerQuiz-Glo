@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const prevButton = document.querySelector('#prev');
     const modalDialog = document.querySelector('.modal-dialog');
     const sendButton = document.querySelector('#send');
+    const modalTitle = document.querySelector('.modal-title');
       
 
  
@@ -157,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function(){
     /*Функция, которая запускает квиз - начало тестирования */
     const playTest =() => {
         const finalAnswers = [];
+        const obj = {};
         // Переменная с номером вопроса
         let numberQuestion = 0;
         //создаем (рендерим) ответы
@@ -192,6 +194,8 @@ document.addEventListener('DOMContentLoaded', function(){
             }
 
             if (numberQuestion === questions.length) {
+                questionTitle.textContent = '';
+                modalTitle.textContent = '';
                 nextButton.classList.add('d-none');
                 prevButton.classList.add('d-none');
                 sendButton.classList.remove('d-none');
@@ -202,10 +206,23 @@ document.addEventListener('DOMContentLoaded', function(){
                         <input type="phone" class="form-control" id="numberPhone">
                     </div>
                 `;
+
+                const numberPhone = document.getElementById('numberPhone');
+                numberQuestion.addEventListener('input', (event) => {
+                    event.target.value = event.target.value.replace(/[^0-9+-]/, '');
+                });
             }
 
             if (numberQuestion === questions.length + 1) {
                 formAnswers.textContent = 'Спасибо за пройденный тест!';
+                
+                for(let key in obj) {
+                    let newObj = {};
+                    newObj[key] = obj[key];
+                    finalAnswers.push(newObj);
+                }
+
+
                 setTimeout(() => {
                     modalBlock.classList.remove('d-block');
                 }, 2000);
@@ -216,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function(){
         renderQuestions(numberQuestion);
 
         const checkAnswer = () => {
-            const obj = {};
+            
             const inputs = [...formAnswers.elements].filter((input) => input.checked || input.id === 'numberPhone');
             
             inputs.forEach((input, index) => {
@@ -226,8 +243,9 @@ document.addEventListener('DOMContentLoaded', function(){
                 if (numberQuestion === questions.length) {
                     obj['Номер телефона'] = input.value;
                 }
-            })
-            finalAnswers.push(obj);
+            });
+            
+           // finalAnswers.push(obj);
         };
 
         // обработчики событий кнопки след/предыдущий вопрос
