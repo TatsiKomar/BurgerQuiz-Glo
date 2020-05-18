@@ -12,84 +12,33 @@ document.addEventListener('DOMContentLoaded', function(){
     const sendButton = document.querySelector('#send');
     const modalTitle = document.querySelector('.modal-title');
       
-
+    // функция получает со стороннего сервера наши данные
+    const getData = () => {
+        // выводим в модальное окно текст LOAD
+        formAnswers.textContent = 'LOAD';
+        /* Создаем файл questions.json.
+        В него вставляем наш объект вопросов и ответов.
+        Обязательно меняем кавычки на двойные.
+        Объект в этом файле удаляем.
+        Сайт запущен через Open Server.
+        В fetch записываем url из адресной строки.
+        localhost может отличаться.
+        чтобы сайт открывася на любом хосте, заменяем
+        http://localhost:81/Quiz_intens
+        на . далее файл.
+        fetch формирует запрос, ответом на который будет 
+        promise. используем then
+        */
+       setTimeout(() => {
+        fetch('/questions.json')
+        .then(res => res.json)
+            .then(obj => playTest(obj.questions))
+            .catch(err => {
+                formAnswers.textContent = 'Ошибка загрузки данных!'
+            })
+        }, 1000) 
+    };
  
-    // основной блок данных (вопросы и ответы)
-    const questions = [
-        {
-            question: "Какого цвета бургер?",
-            answers: [
-                {
-                    title: 'Стандарт',
-                    url: './image/burger.png'
-                },
-                {
-                    title: 'Черный',
-                    url: './image/burgerBlack.png'
-                }
-            ],
-            type: 'radio'
-        },
-        {
-            question: "Из какого мяса котлета?",
-            answers: [
-                {
-                    title: 'Курица',
-                    url: './image/chickenMeat.png'
-                },
-                {
-                    title: 'Говядина',
-                    url: './image/beefMeat.png'
-                },
-                {
-                    title: 'Свинина',
-                    url: './image/porkMeat.png'
-                }
-            ],
-            type: 'radio'
-        },
-        {
-            question: "Дополнительные ингредиенты?",
-            answers: [
-                {
-                    title: 'Помидор',
-                    url: './image/tomato.png'
-                },
-                {
-                    title: 'Огурец',
-                    url: './image/cucumber.png'
-                },
-                {
-                    title: 'Салат',
-                    url: './image/salad.png'
-                },
-                {
-                    title: 'Лук',
-                    url: './image/onion.png'
-                }
-            ],
-            type: 'checkbox'
-        },
-        {
-            question: "Добавить соус?",
-            answers: [
-                {
-                    title: 'Чесночный',
-                    url: './image/sauce1.png'
-                },
-                {
-                    title: 'Томатный',
-                    url: './image/sauce2.png'
-                },
-                {
-                    title: 'Горчичный',
-                    url: './image/sauce3.png'
-                }
-            ],
-            type: 'radio'
-        }
-    ];
-
     let clientWidth = document.documentElement.clientWidth;
     
     //регулируем отображение glo.. при изменении ширины окна браузера
@@ -122,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function(){
     const animateModal = () => {
         modalDialog.style.top = count + "%";
         count += 3;
-        
         if (count < 0) {
             requestAnimationFrame(animateModal);
         } else {
@@ -134,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function(){
     btnOpenModal.addEventListener('click', () => {
         requestAnimationFrame(animateModal);
         modalBlock.classList.add('d-block');
-        playTest();
+        getData();
     });
 
     //закрываем диалоговое окно
@@ -156,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   
     /*Функция, которая запускает квиз - начало тестирования */
-    const playTest =() => {
+    const playTest =(questions) => {
         const finalAnswers = [];
         const obj = {};
         // Переменная с номером вопроса
@@ -222,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function(){
                     finalAnswers.push(newObj);
                 }
 
-
                 setTimeout(() => {
                     modalBlock.classList.remove('d-block');
                 }, 2000);
@@ -244,8 +191,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     obj['Номер телефона'] = input.value;
                 }
             });
-            
-           // finalAnswers.push(obj);
+         // finalAnswers.push(obj);
         };
 
         // обработчики событий кнопки след/предыдущий вопрос
@@ -259,15 +205,13 @@ document.addEventListener('DOMContentLoaded', function(){
             numberQuestion--;
             renderQuestions(numberQuestion);
         };
+
         sendButton.onclick = () => {
             checkAnswer();
             numberQuestion++;
             renderQuestions(numberQuestion);
-
-            
         }
     };
-    
 });
 
 
